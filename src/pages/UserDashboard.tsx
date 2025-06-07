@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Briefcase, Clock, CheckCircle, XCircle, Building2, MapPin, Calendar, RefreshCw } from 'lucide-react';
-import axios from 'axios';
+import api from '../config/api'; // Changed from axios to api
 import { useAuth } from '../contexts/AuthContext';
 
 interface Application {
@@ -63,14 +63,14 @@ const UserDashboard: React.FC = () => {
       
       // Fetch user applications
       try {
-        const applicationsResponse = await axios.get(`/api/applications/user/${user.id}`);
+        const applicationsResponse = await api.get(`/api/applications/user/${user.id}`); // Changed from axios
         console.log('Applications response:', applicationsResponse.data);
         setApplications(applicationsResponse.data.applications || []);
       } catch (appError) {
         console.error('Error fetching applications:', appError);
         // Si l'endpoint user specific ne marche pas, essayer l'endpoint général
         try {
-          const generalResponse = await axios.get('/api/applications');
+          const generalResponse = await api.get('/api/applications'); // Changed from axios
           console.log('General applications response:', generalResponse.data);
           // Filtrer les applications de cet utilisateur
           const userApplications = generalResponse.data.applications?.filter(
@@ -85,7 +85,7 @@ const UserDashboard: React.FC = () => {
 
       // Fetch statistics
       try {
-        const statsResponse = await axios.get('/api/applications/statistics');
+        const statsResponse = await api.get('/api/applications/statistics'); // Changed from axios
         console.log('Stats response:', statsResponse.data);
         setStats(statsResponse.data);
       } catch (statsError) {
