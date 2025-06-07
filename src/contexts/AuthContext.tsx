@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import api from '../config/api';
+import api from '../config/api'; // Using the centralized API config
 
 interface User {
   id: string;
@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Configure api defaults
+  // Verify token on app load
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -47,6 +47,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const verifyToken = async () => {
     try {
       const response = await api.get('/api/auth/verify');
+      console.log('✅ Token verification successful:', response.data);
       setUser({
         id: response.data.user_id,
         email: response.data.user_info.email,
@@ -55,7 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         user_type: response.data.user_type
       });
     } catch (error) {
-      console.error('Token verification failed:', error);
+      console.error('❌ Token verification failed:', error);
       localStorage.removeItem('token');
     } finally {
       setIsLoading(false);
@@ -64,11 +65,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string, userType: 'user' | 'company'): Promise<boolean> => {
     try {
+      console.log('🔐 Attempting login:', { email, userType });
       const response = await api.post('/api/auth/login', {
         email,
         password,
         user_type: userType
       });
+
+      console.log('✅ Login successful:', response.data);
 
       const { token, user_info, user_type, user_id } = response.data;
       
@@ -83,13 +87,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       return true;
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch (error: any) {
+      console.error('❌ Login error:', error);
+      if (error.response?.data?.message) {
+        console.error('Login error message:', error.response.data.message);
+      }
       return false;
     }
   };
 
   const logout = () => {
+    console.log('🚪 Logging out user');
     localStorage.removeItem('token');
     setUser(null);
   };
