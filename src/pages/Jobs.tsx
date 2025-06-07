@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, MapPin, Clock, Building2, Euro, Filter } from 'lucide-react';
-import axios from 'axios';
+import api from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
 
 interface Job {
@@ -40,8 +40,8 @@ const Jobs: React.FC = () => {
         ...(locationFilter && { localisation: locationFilter }),
         ...(contractFilter && { type_contrat: contractFilter }),
       });
-
-      const response = await axios.get(`/api/jobs?${params}`);
+  
+      const response = await api.get(`/api/jobs?${params}`); // Changed from axios to api
       setJobs(response.data.jobs);
       setTotalPages(response.data.pages);
     } catch (error) {
@@ -49,7 +49,7 @@ const Jobs: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchTerm, locationFilter, contractFilter]);
+  }, [currentPage, searchTerm, locationFilter, contractFilter]);  
 
   useEffect(() => {
     fetchJobs();

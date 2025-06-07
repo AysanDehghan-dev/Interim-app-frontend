@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../config/api';
 
 interface User {
   id: string;
@@ -34,11 +34,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Configure axios defaults
+  // Configure api defaults
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       verifyToken();
     } else {
       setIsLoading(false);
@@ -47,7 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const verifyToken = async () => {
     try {
-      const response = await axios.get('/api/auth/verify');
+      const response = await api.get('/api/auth/verify');
       setUser({
         id: response.data.user_id,
         email: response.data.user_info.email,
@@ -56,8 +55,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         user_type: response.data.user_type
       });
     } catch (error) {
+      console.error('Token verification failed:', error);
       localStorage.removeItem('token');
-      delete axios.defaults.headers.common['Authorization'];
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +64,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string, userType: 'user' | 'company'): Promise<boolean> => {
     try {
-      const response = await axios.post('/api/auth/login', {
+      const response = await api.post('/api/auth/login', {
         email,
         password,
         user_type: userType
@@ -74,7 +73,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const { token, user_info, user_type, user_id } = response.data;
       
       localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
       setUser({
         id: user_id,
@@ -93,7 +91,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
     setUser(null);
   };
 

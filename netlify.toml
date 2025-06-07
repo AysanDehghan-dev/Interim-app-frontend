@@ -1,12 +1,20 @@
 [build]
-base = "frontend"
+base = "."
 command = "npm run build"
 publish = "build"
 
 [build.environment]
 NODE_VERSION = "18"
+REACT_APP_API_URL = "https://interim-backend-production.up.railway.app"
 
 [[redirects]]
 from = "/*"
 to = "/index.html"
 status = 200
+
+# Optional: Handle API calls (if you want to proxy through Netlify)
+[[redirects]]
+from = "/api/*"
+to = "https://interim-backend-production.up.railway.app/api/:splat"
+status = 200
+force = true
