@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Users, Briefcase, TrendingUp, Eye, Mail, User, Calendar, MapPin, RefreshCw, XCircle } from 'lucide-react';
-import axios from 'axios';
+import api from '../config/api'; // Changed from axios to api
 import { useAuth } from '../contexts/AuthContext';
 
 interface Job {
@@ -80,14 +80,14 @@ const CompanyDashboard: React.FC = () => {
       
       // Fetch company jobs
       try {
-        const jobsResponse = await axios.get(`/api/companies/${user.id}/jobs`);
+        const jobsResponse = await api.get(`/api/companies/${user.id}/jobs`); // Changed from axios
         console.log('Jobs response:', jobsResponse.data);
         setJobs(jobsResponse.data.jobs || []);
       } catch (jobsError) {
         console.error('Error fetching jobs:', jobsError);
         // Fallback: fetch all jobs and filter by company
         try {
-          const allJobsResponse = await axios.get('/api/jobs');
+          const allJobsResponse = await api.get('/api/jobs'); // Changed from axios
           const companyJobs = allJobsResponse.data.jobs?.filter(
             (job: any) => job.company_id === user.id
           ) || [];
@@ -100,14 +100,14 @@ const CompanyDashboard: React.FC = () => {
 
       // Fetch company applications
       try {
-        const applicationsResponse = await axios.get(`/api/applications/company/${user.id}?limit=10`);
+        const applicationsResponse = await api.get(`/api/applications/company/${user.id}?limit=10`); // Changed from axios
         console.log('Applications response:', applicationsResponse.data);
         setRecentApplications(applicationsResponse.data.applications || []);
       } catch (appError) {
         console.error('Error fetching applications:', appError);
         // Fallback: fetch all applications and filter by company
         try {
-          const allAppsResponse = await axios.get('/api/applications');
+          const allAppsResponse = await api.get('/api/applications'); // Changed from axios
           const companyApps = allAppsResponse.data.applications?.filter(
             (app: any) => app.company_id === user.id
           ).slice(0, 10) || [];
@@ -120,7 +120,7 @@ const CompanyDashboard: React.FC = () => {
 
       // Fetch statistics
       try {
-        const statsResponse = await axios.get('/api/applications/statistics');
+        const statsResponse = await api.get('/api/applications/statistics'); // Changed from axios
         console.log('Stats response:', statsResponse.data);
         setStats(statsResponse.data);
       } catch (statsError) {
@@ -151,7 +151,7 @@ const CompanyDashboard: React.FC = () => {
 
   const updateApplicationStatus = async (applicationId: string, newStatus: 'Acceptée' | 'Refusée') => {
     try {
-      await axios.put(`/api/applications/${applicationId}/status`, {
+      await api.put(`/api/applications/${applicationId}/status`, { // Changed from axios
         statut: newStatus
       });
       
@@ -170,7 +170,7 @@ const CompanyDashboard: React.FC = () => {
     }
 
     try {
-      await axios.delete(`/api/jobs/${jobId}`);
+      await api.delete(`/api/jobs/${jobId}`); // Changed from axios
       alert('Offre supprimée avec succès !');
       // Refresh data
       fetchCompanyData();
@@ -189,10 +189,10 @@ const CompanyDashboard: React.FC = () => {
     try {
       if (currentStatus) {
         // Deactivate job
-        await axios.put(`/api/jobs/${jobId}/deactivate`);
+        await api.put(`/api/jobs/${jobId}/deactivate`); // Changed from axios
       } else {
         // Reactivate job
-        await axios.put(`/api/jobs/${jobId}`, { actif: true });
+        await api.put(`/api/jobs/${jobId}`, { actif: true }); // Changed from axios
       }
       
       alert(`Offre ${currentStatus ? 'désactivée' : 'réactivée'} avec succès !`);
@@ -289,6 +289,9 @@ const CompanyDashboard: React.FC = () => {
           </div>
         </div>
 
+        {/* Rest of the component stays the same - just continuing with the tab content... */}
+        {/* I'll continue with a shortened version for space, but all the JSX remains identical */}
+        
         {/* Tabs */}
         <div className="border-b border-gray-200 dark:border-gray-700 mb-8">
           <div className="flex space-x-8">
@@ -325,7 +328,7 @@ const CompanyDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Overview Tab */}
+        {/* Tab Content - Overview */}
         {activeTab === 'overview' && (
           <div className="space-y-8">
             {/* Statistics Cards */}
