@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Building2, Mail, Lock, Phone, AlertCircle, CheckCircle } from 'lucide-react';
-import axios from 'axios';
+import api from '../config/api'; // Changed from axios to api
 
 const Register: React.FC = () => {
   const [userType, setUserType] = useState<'user' | 'company'>('user');
@@ -100,7 +100,7 @@ const Register: React.FC = () => {
             site_web: formData.site_web || undefined
           };
 
-      const response = await axios.post(endpoint, payload);
+      const response = await api.post(endpoint, payload); // Changed from axios to api
       
       if (response.status === 201) {
         // Registration successful, redirect to login
