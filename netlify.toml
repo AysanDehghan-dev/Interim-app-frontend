@@ -7,14 +7,15 @@ publish = "build"
 NODE_VERSION = "18"
 REACT_APP_API_URL = "https://interim-backend-production.up.railway.app"
 
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
-
-# Optional: Handle API calls (if you want to proxy through Netlify)
+# Handle API calls - proxy to Railway backend (this must come FIRST)
 [[redirects]]
 from = "/api/*"
 to = "https://interim-backend-production.up.railway.app/api/:splat"
 status = 200
 force = true
+
+# Handle client-side routing - this should be LAST
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
