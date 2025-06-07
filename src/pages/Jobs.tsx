@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, MapPin, Clock, Building2, Euro, Filter } from 'lucide-react';
-import api from '../config/api';
+import api from '../config/api'; // Changed from axios to api
 import { useAuth } from '../contexts/AuthContext';
 
 interface Job {
@@ -40,8 +40,8 @@ const Jobs: React.FC = () => {
         ...(locationFilter && { localisation: locationFilter }),
         ...(contractFilter && { type_contrat: contractFilter }),
       });
-  
-      const response = await api.get(`/api/jobs?${params}`); // Changed from axios to api
+
+      const response = await api.get(`/api/jobs?${params}`);
       setJobs(response.data.jobs);
       setTotalPages(response.data.pages);
     } catch (error) {
@@ -49,7 +49,7 @@ const Jobs: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchTerm, locationFilter, contractFilter]);  
+  }, [currentPage, searchTerm, locationFilter, contractFilter]);
 
   useEffect(() => {
     fetchJobs();
@@ -69,7 +69,7 @@ const Jobs: React.FC = () => {
 
     try {
       setApplying(jobId);
-      await axios.post('/api/applications', {
+      await api.post('/api/applications', {
         job_id: jobId,
         lettre_motivation: 'Candidature via la plateforme InterimApp'
       });

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Briefcase, MapPin, Euro, Calendar, Users, AlertCircle, CheckCircle } from 'lucide-react';
-import axios from 'axios';
+import api from '../config/api'; // Changed from axios to api
 import { useAuth } from '../contexts/AuthContext';
 
 const CreateJob: React.FC = () => {
@@ -95,7 +95,7 @@ const CreateJob: React.FC = () => {
 
       console.log('Submitting job data:', jobData);
 
-      const response = await axios.post('/api/jobs', jobData);
+      const response = await api.post('/api/jobs', jobData); // Changed from axios to api
       
       if (response.status === 201) {
         setSuccess(true);
