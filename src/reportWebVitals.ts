@@ -1,14 +1,9 @@
-import { ReportHandler } from 'web-vitals';
-
-const reportWebVitals = (onPerfEntry?: ReportHandler) => {
+// Simple reportWebVitals implementation without web-vitals dependency
+const reportWebVitals = (onPerfEntry?: any) => {
+  // For now, we'll just log that web vitals would be reported here
+  // You can install web-vitals package later if needed: npm install web-vitals
   if (onPerfEntry && onPerfEntry instanceof Function) {
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(onPerfEntry);
-      getFID(onPerfEntry);
-      getFCP(onPerfEntry);
-      getLCP(onPerfEntry);
-      getTTFB(onPerfEntry);
-    });
+    console.log('Web Vitals reporting would happen here');
   }
 };
 
